@@ -18,4 +18,10 @@ public class Constants {
 	public static final String FORMAT_PARAM_NAME = "format";
 	public static final String PER_PAGE_ARG_NAME = "per_page";
 	public static final String PAGE_ARG_NAME = "page";
+	
+	/**
+	 * Utils
+	 */
+	
+	public static final int THREADPOOL_SIZE = 5;
 }

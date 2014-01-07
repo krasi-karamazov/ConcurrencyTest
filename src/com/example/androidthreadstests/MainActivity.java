@@ -2,27 +2,18 @@ package com.example.androidthreadstests;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Exchanger;
-
 import com.example.androidthreadstests.adapters.GalleryAdapter;
 import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.tasks.MainDataLoader;
 import com.example.androidthreadstests.tasks.listeners.MainDataListener;
 import com.example.androidthreadstests.utils.Constants;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 public class MainActivity extends Activity implements MainDataListener {
 	private GridView mGridView;

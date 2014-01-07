@@ -3,10 +3,10 @@ package com.example.androidthreadstests.adapters;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +20,7 @@ public class GalleryAdapter extends BaseAdapter {
 		ImageView imgView;
 		TextView label;
 		String id;
+		Bitmap bmp;
 	}
 	
 	private Context mContext;
@@ -45,6 +46,11 @@ public class GalleryAdapter extends BaseAdapter {
 		
 		holder = (ViewHolder)row.getTag();
 		holder.label.setText(((GalleryItem)getItem(position)).getTitle());
+		if(holder.bmp != null) {
+			holder.imgView.setImageBitmap(holder.bmp);
+		}else{
+			
+		}
 		return row;
 	}
 
