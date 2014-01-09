@@ -9,22 +9,22 @@ import java.util.Map.Entry;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-public class ImageMemoryCache {
+public class MemoryCache {
 
-	private static ImageMemoryCache sInstance;
+	private static MemoryCache sInstance;
 	private static final long DEFAULT_MAX_SIZE = Runtime.getRuntime().maxMemory() / 6;
 	private long mMaxSize;
-	private Map<String, Bitmap> mLruMap = Collections.synchronizedMap(new LinkedHashMap<String, Bitmap>(10, 1.5f, true));
+	private Map<String, Bitmap> mCache = Collections.synchronizedMap(new LinkedHashMap<String, Bitmap>(10, 1.5f, true));
 	private long mSize;
-	private ImageMemoryCache(long maxSize) {
+	private MemoryCache(long maxSize) {
 		setLimit(mMaxSize);
 	}
 	
-	public static ImageMemoryCache getInstance() {
+	public static MemoryCache getInstance() {
 		
-		synchronized (ImageMemoryCache.class) {
+		synchronized (MemoryCache.class) {
 			if(sInstance == null) {
-				sInstance = new ImageMemoryCache(DEFAULT_MAX_SIZE);
+				sInstance = new MemoryCache(DEFAULT_MAX_SIZE);
 			}
 		}
 		
@@ -33,15 +33,19 @@ public class ImageMemoryCache {
 	
 	public synchronized void setLimit(long newMaxSize) {
 		Log.d(getClass().getSimpleName(), "New max size: " + newMaxSize);
-		mMaxSize = newMaxSize;
+		if(newMaxSize > 0){
+			mMaxSize = newMaxSize;
+		}else{
+			mMaxSize = DEFAULT_MAX_SIZE;
+		}
 	}
 	
 	public synchronized void put(String key, Bitmap value) {
 		try{
-			if(mLruMap.containsKey(key)){
+			if(mCache.containsKey(key)){
 				return;
 			}
-			mLruMap.put(key, value);
+			mCache.put(key, value);
 			mSize += getSize(value);
 			ensureSize();
 		}catch(Throwable e){
@@ -52,10 +56,10 @@ public class ImageMemoryCache {
 	
 	public synchronized Bitmap get(String key){
 		try{
-			if(!mLruMap.containsKey(key)){
+			if(!mCache.containsKey(key)){
 				return null;
 			}
-			return mLruMap.get(key);
+			return mCache.get(key);
 		}catch(Throwable e){
 			Log.d(getClass().getSimpleName(), "IN CACHE GET METHOD " + e.getMessage());
 			return null;
@@ -63,14 +67,14 @@ public class ImageMemoryCache {
 	}
 	
 	public synchronized boolean contains(String key) {
-		return mLruMap.containsKey(key);
+		return mCache.containsKey(key);
 	}
 
 	private void ensureSize() {
 		
 		if(mSize > mMaxSize) {
 			long cleanedUpSizeTotal = 0l;
-			Iterator<Map.Entry<String, Bitmap>> iterator = mLruMap.entrySet().iterator();
+			Iterator<Map.Entry<String, Bitmap>> iterator = mCache.entrySet().iterator();
 			while(iterator.hasNext()){
 				Entry<String, Bitmap> entry = iterator.next();
 				long size = getSize(entry.getValue());
@@ -88,6 +92,12 @@ public class ImageMemoryCache {
 	private long getSize(Bitmap value) {
 		long size = value.getRowBytes() * value.getHeight();
 		return size;
+	}
+	
+	public void clear() {
+		mCache.clear();
+		mSize = 0;
+		System.gc();
 	}
 
 }

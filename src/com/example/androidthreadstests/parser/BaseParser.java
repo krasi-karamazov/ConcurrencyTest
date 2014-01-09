@@ -2,7 +2,7 @@ package com.example.androidthreadstests.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,7 +22,7 @@ public abstract class BaseParser<T> {
 	}
 	
 	public List<T> parseData(InputStream xmlData) {
-		items = new ArrayList<T>();
+		items = new LinkedList<T>();
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		
 		try {

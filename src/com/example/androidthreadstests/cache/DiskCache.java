@@ -12,11 +12,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 public class DiskCache {
 	private static File cacheDir;
 	private static DiskCache sInstance;
-	
+	private static int MAX_CACHE = 1024 * 1024 * 8;
 	private DiskCache() {
 	
 	}
@@ -53,14 +54,17 @@ public class DiskCache {
 		while(is.read(buffer) != -1){
 			fos.write(buffer);
 		}
+		fos.flush();
 		fos.close();
+		is.close();
 		Bitmap bmp = null;
 		try{
 			bmp = decodeBitmap(f, width, height);
 		}catch(IOException e){
+			e.printStackTrace();
 			bmp = null;
 		}
-		ImageMemoryCache.getInstance().put(id, bmp);
+		MemoryCache.getInstance().put(id, bmp);
 	}
 	
 	public synchronized Bitmap get(String id, int width, int height) throws IOException{
@@ -69,9 +73,10 @@ public class DiskCache {
 			return null;
 		}
 		try{
-			ImageMemoryCache.getInstance().put(id, decodeBitmap(f, width, height));
-			return ImageMemoryCache.getInstance().get(id);
+			MemoryCache.getInstance().put(id, decodeBitmap(f, width, height));
+			return MemoryCache.getInstance().get(id);
 		}catch(IOException e){
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -95,5 +100,14 @@ public class DiskCache {
 		Bitmap bmp = BitmapFactory.decodeStream(fis2, null, options2);
 		fis2.close();
 		return bmp;
+	}
+	
+	public static void clear() {
+		if(cacheDir != null) {
+			File[] files = cacheDir.listFiles();
+			for(File f : files) {
+				f.delete();
+			}
+		}
 	}
 }

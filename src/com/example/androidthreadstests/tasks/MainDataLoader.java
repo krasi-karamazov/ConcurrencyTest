@@ -25,8 +25,7 @@ public class MainDataLoader extends AsyncTask<Integer, Void, List<GalleryItem>> 
 		final Uri completeQuery = Uri.parse(Constants.ENDPOINT).buildUpon().appendQueryParameter(Constants.METHOD_PARAM_NAME, Constants.GET_RECENT_METHOD)
 					.appendQueryParameter(Constants.API_KEY_PARAM_NAME, Constants.API_KEY)
 					.appendQueryParameter(Constants.FORMAT_PARAM_NAME, Constants.FORMAT)
-					.appendQueryParameter(Constants.PAGE_ARG_NAME, arg0[0].toString())
-					.appendQueryParameter(Constants.PER_PAGE_ARG_NAME, Constants.PER_PAGE_ARG)
+					.appendQueryParameter("extras", "url_q")
 					.build();
 		if(completeQuery == null){
 			return null;
@@ -39,17 +38,12 @@ public class MainDataLoader extends AsyncTask<Integer, Void, List<GalleryItem>> 
 			is = urlConnection.getInputStream();
 			
 			items = new FlikrParser().parseData(is);
+			is.close();
 			
 		} catch (MalformedURLException e) {
 			return null;
 		} catch (IOException e) {
 			return null;
-		}finally{
-			try {
-				is.close();
-			} catch (IOException e) {
-				return null;
-			}
 		}
 		
 		return items;

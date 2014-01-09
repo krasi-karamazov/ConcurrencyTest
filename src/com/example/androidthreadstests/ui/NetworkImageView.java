@@ -1,14 +1,16 @@
 package com.example.androidthreadstests.ui;
 
+import com.example.androidthreadstests.cache.MemoryCache;
+import com.example.androidthreadstests.models.BaseGalleryModel;
 import com.example.androidthreadstests.tasks.ImageLoader;
+import com.example.androidthreadstests.tasks.Downloader;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class NetworkImageView extends ImageView {
-
-	private ImageLoader mListener;
 	public NetworkImageView(Context context) {
 		super(context);
 	}
@@ -21,7 +23,13 @@ public class NetworkImageView extends ImageView {
 		super(context, attrs, defStyle);
 	}
 
-	public void loadImage(String str) {
+	public void loadImage(BaseGalleryModel model) {
+		if(MemoryCache.getInstance().contains(model.getId())) {
+			setImageBitmap(MemoryCache.getInstance().get(model.getId()));
+			Log.d(getClass().getSimpleName(), "Loaded from memory");
+		}else{
+			ImageLoader.getInstance(getContext()).loadImage(model, this);
+		}
 	}
 	
 }

@@ -2,13 +2,15 @@ package com.example.androidthreadstests.tasks.impl;
 
 import com.example.androidthreadstests.models.BaseGalleryModel;
 import com.example.androidthreadstests.models.GalleryItem;
+import com.example.androidthreadstests.tasks.ImageLoader;
 import com.example.androidthreadstests.tasks.ImageLoaderTask;
 import com.example.androidthreadstests.tasks.listeners.LoadImageListener;
+import com.example.androidthreadstests.ui.NetworkImageView;
 
-public class FlikrImageTask extends ImageLoaderTask {
+public class FlickrImageTask extends ImageLoaderTask {
 
-	public FlikrImageTask(BaseGalleryModel model, LoadImageListener listener) {
-		super(model, listener);
+	public FlickrImageTask(NetworkImageView view, BaseGalleryModel model, LoadImageListener listener, ImageLoader invoker) {
+		super(view, model, listener, invoker);
 	}
 
 	@Override
