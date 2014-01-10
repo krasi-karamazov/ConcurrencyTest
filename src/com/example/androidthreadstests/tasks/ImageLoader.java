@@ -1,22 +1,16 @@
 package com.example.androidthreadstests.tasks;
 
-import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import com.example.androidthreadstests.cache.DiskCache;
 import com.example.androidthreadstests.cache.MemoryCache;
 import com.example.androidthreadstests.models.BaseGalleryModel;
-import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.tasks.impl.FlickrImageTask;
 import com.example.androidthreadstests.tasks.listeners.LoadImageListener;
-import com.example.androidthreadstests.ui.NetworkImageView;
 import com.example.androidthreadstests.utils.Constants;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -30,7 +24,7 @@ public class ImageLoader {
 	private Context mContext;
 	private Handler mHandler;
 	private static ImageLoader sInstance;
-	private Map<NetworkImageView, BaseGalleryModel> mMap = Collections.synchronizedMap(new WeakHashMap<NetworkImageView, BaseGalleryModel>());
+	private Map<ImageView, BaseGalleryModel> mMap = Collections.synchronizedMap(new WeakHashMap<ImageView, BaseGalleryModel>());
 	private ImageLoader(Context context) {
 		
 		mContext = context.getApplicationContext();
@@ -46,18 +40,22 @@ public class ImageLoader {
 		return sInstance;
 	}
 	
-	public void loadImage(BaseGalleryModel item, NetworkImageView imgView) {
+	public void loadImage(BaseGalleryModel item, ImageView imgView) {
 		mMap.put(imgView, item);
-		enqueueImage(imgView);
-		
+		if(MemoryCache.getInstance().contains(item.getId())){
+			imgView.setImageBitmap(MemoryCache.getInstance().get(item.getId()));
+			Log.d(getClass().getSimpleName(), "Loaded from memory");
+		}else{
+			enqueueImage(imgView);
+		}
 	}
 
-	private void enqueueImage(NetworkImageView imgView) {
+	private void enqueueImage(ImageView imgView) {
 		final BaseGalleryModel model = mMap.get(imgView);
 		if(model == null) {
 			return;
 		}
-		FlickrImageTask task = new FlickrImageTask(imgView, model, new NetworkListener(), this);
+		FlickrImageTask task = new FlickrImageTask(imgView, model, new NetworkListener());
 		mExecutorService.submit(task);
 	}
 	
@@ -65,7 +63,7 @@ public class ImageLoader {
 		
 		
 		@Override
-		public void onLoadCompleted(final Bitmap bmp, final NetworkImageView view, final BaseGalleryModel model) {
+		public void onLoadCompleted(final Bitmap bmp, final ImageView view, final BaseGalleryModel model) {
 			mHandler.post(new Runnable() {
 				
 				@Override
@@ -79,7 +77,7 @@ public class ImageLoader {
 		}
 
 		@Override
-		public void onLoadError(String id, NetworkImageView view) {
+		public void onLoadError(String id, ImageView view) {
 			Log.d(getClass().getSimpleName(), "Error with " + id);
 		}
 	}

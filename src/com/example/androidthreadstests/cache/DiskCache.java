@@ -5,19 +5,16 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import com.example.androidthreadstests.R;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.util.Log;
 
 public class DiskCache {
 	private static File cacheDir;
 	private static DiskCache sInstance;
-	private static int MAX_CACHE = 1024 * 1024 * 8;
+	//private static int MAX_CACHE = 1024 * 1024 * 8;
 	private DiskCache() {
 	
 	}
@@ -47,14 +44,14 @@ public class DiskCache {
 	}
 	
 	public synchronized void put(String id, InputStream is, int width, int height) throws IOException{
-		File f = new File(cacheDir, id); 
-		byte[] buffer = new byte[1024];
-		FileOutputStream fos = new FileOutputStream(f);
-		
-		while(is.read(buffer) != -1){
-			fos.write(buffer);
+		if(!cacheDir.exists()){
+			cacheDir.mkdirs();
 		}
-		fos.flush();
+		File f = new File(cacheDir, id + ".jpg"); 
+		FileOutputStream fos = new FileOutputStream(f);
+		Bitmap bmpDownloaded = BitmapFactory.decodeStream(is);
+		bmpDownloaded.compress(Bitmap.CompressFormat.JPEG, 70, fos);
+		
 		fos.close();
 		is.close();
 		Bitmap bmp = null;
@@ -68,6 +65,9 @@ public class DiskCache {
 	}
 	
 	public synchronized Bitmap get(String id, int width, int height) throws IOException{
+		if(!cacheDir.exists()){
+			cacheDir.mkdirs();
+		}
 		File f = new File(cacheDir, id); 
 		if(!f.exists()){
 			return null;
@@ -89,11 +89,18 @@ public class DiskCache {
 		fis.close();
 		int tempWidth = options.outWidth;
 		int tempHeight = options.outHeight;
-		int scale = 1;
+		int scale = Math.max(tempWidth / requiredWidth, tempHeight / requiredHeight);
 		
-		while(((tempWidth / scale) > requiredWidth) && ((tempHeight / scale) > requiredHeight) ) {
-			scale *=2;
-		}
+		if (tempHeight > requiredHeight || tempWidth > requiredWidth) {
+
+	        final int halfHeight = tempHeight / 2;
+	        final int halfWidth = tempWidth / 2;
+
+	        while ((halfHeight / scale) > requiredHeight
+	                && (halfWidth / scale) > requiredWidth) {
+	            scale *= 2;
+	        }
+	    }
 		BitmapFactory.Options options2 = new BitmapFactory.Options();
 		options2.inSampleSize = scale;
 		FileInputStream fis2 = new FileInputStream(f);
@@ -103,10 +110,12 @@ public class DiskCache {
 	}
 	
 	public static void clear() {
-		if(cacheDir != null) {
+		if(cacheDir != null && cacheDir.exists()) {
 			File[] files = cacheDir.listFiles();
 			for(File f : files) {
-				f.delete();
+				if(f.exists()){
+					f.delete();
+				}
 			}
 		}
 	}

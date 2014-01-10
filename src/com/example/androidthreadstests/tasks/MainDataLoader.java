@@ -25,6 +25,8 @@ public class MainDataLoader extends AsyncTask<Integer, Void, List<GalleryItem>> 
 		final Uri completeQuery = Uri.parse(Constants.ENDPOINT).buildUpon().appendQueryParameter(Constants.METHOD_PARAM_NAME, Constants.GET_RECENT_METHOD)
 					.appendQueryParameter(Constants.API_KEY_PARAM_NAME, Constants.API_KEY)
 					.appendQueryParameter(Constants.FORMAT_PARAM_NAME, Constants.FORMAT)
+					.appendQueryParameter(Constants.PAGE_ARG_NAME, Integer.valueOf(Constants.CURRENT_PAGE).toString())
+					.appendQueryParameter(Constants.PER_PAGE_ARG_NAME, Constants.PER_PAGE_ARG)
 					.appendQueryParameter("extras", "url_q")
 					.build();
 		if(completeQuery == null){

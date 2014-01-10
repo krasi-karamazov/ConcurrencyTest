@@ -1,5 +1,6 @@
 package com.example.androidthreadstests.tasks.impl;
 
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -11,7 +12,6 @@ import android.widget.ImageView;
 
 import com.example.androidthreadstests.cache.DiskCache;
 import com.example.androidthreadstests.cache.MemoryCache;
-import com.example.androidthreadstests.models.BaseGalleryModel;
 import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.tasks.Downloader;
 
@@ -34,14 +34,17 @@ public class FlickrDownloader extends Downloader<ImageView, GalleryItem, Bitmap>
 				Log.d(getClass().getSimpleName(), "Loaded from MEMORY");
 			}else{
 				String urlString = getURL(model);
-				bmp = DiskCache.getInstance().get(model.getId(), 75, 75);
+				bmp = DiskCache.getInstance().get(model.getId(), 200, 200);
 				if(bmp != null) {
 					Log.d(getClass().getSimpleName(), "Loaded from DISK");
 					return bmp;
 				}else{
 					URL url = new URL(urlString);
-					URLConnection conn = url.openConnection();
-					DiskCache.getInstance().put(model.getId(), conn.getInputStream(), 75, 75);
+					HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+					connection.setDoInput(true);
+					connection.connect();
+					
+					DiskCache.getInstance().put(model.getId(), connection.getInputStream(), 200, 200);
 					if(MemoryCache.getInstance().contains(model.getId())) {
 						Log.d(getClass().getSimpleName(), "Loaded from web");
 						bmp =  MemoryCache.getInstance().get(model.getId()); 

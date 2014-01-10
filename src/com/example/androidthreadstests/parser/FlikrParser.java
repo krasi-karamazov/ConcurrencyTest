@@ -2,8 +2,6 @@ package com.example.androidthreadstests.parser;
 
 import org.xml.sax.Attributes;
 
-import android.util.Log;
-
 import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.utils.Constants;
 
