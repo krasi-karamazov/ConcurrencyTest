@@ -1,23 +1,16 @@
 package com.example.androidthreadstests.tasks;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.ImageView;
 
-import com.example.androidthreadstests.cache.DiskCache;
-import com.example.androidthreadstests.cache.MemoryCache;
-import com.example.androidthreadstests.models.BaseGalleryModel;
+import com.example.androidthreadstests.models.BaseLoaderModel;
 import com.example.androidthreadstests.tasks.listeners.LoadImageListener;
 
 public abstract class ImageLoaderTask implements Runnable {
 
 	private LoadImageListener mListener;
-	private BaseGalleryModel mModel;
+	private BaseLoaderModel<String> mModel;
 	private ImageView mImageView; 
-	public ImageLoaderTask(ImageView view, BaseGalleryModel model, LoadImageListener listener) {
+	public ImageLoaderTask(ImageView view, BaseLoaderModel<String> model, LoadImageListener listener) {
 		mListener = listener;
 		mModel = model;
 		mImageView = view;
@@ -26,7 +19,7 @@ public abstract class ImageLoaderTask implements Runnable {
 	@Override
 	public void run() {
 		
-		try{
+		/*try{
 			String urlString = getURL(mModel);
 			
 			Bitmap bmp = DiskCache.getInstance().get(mModel.getId(), 75, 75);
@@ -52,9 +45,9 @@ public abstract class ImageLoaderTask implements Runnable {
 		}catch(Exception e){
 			e.printStackTrace();
 			mListener.onLoadError(mModel.getId(), mImageView);
-		}
+		}*/
 	}
 
-	protected abstract String getURL(BaseGalleryModel model);
+	protected abstract String getURL(BaseLoaderModel<String> model);
 
 }

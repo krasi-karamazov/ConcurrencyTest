@@ -1,16 +1,5 @@
 package com.example.androidthreadstests.tasks;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import com.example.androidthreadstests.cache.DiskCache;
-import com.example.androidthreadstests.cache.MemoryCache;
-import com.example.androidthreadstests.models.BaseGalleryModel;
-import com.example.androidthreadstests.tasks.impl.FlickrImageTask;
-import com.example.androidthreadstests.tasks.listeners.LoadImageListener;
-import com.example.androidthreadstests.utils.Constants;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -18,13 +7,26 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.example.androidthreadstests.cache.DiskCache;
+import com.example.androidthreadstests.cache.MemoryCache;
+import com.example.androidthreadstests.models.BaseLoaderModel;
+import com.example.androidthreadstests.tasks.impl.FlickrImageTask;
+import com.example.androidthreadstests.tasks.listeners.LoadImageListener;
+import com.example.androidthreadstests.utils.Constants;
+
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class ImageLoader {
 	
 	private ExecutorService mExecutorService;
 	private Context mContext;
 	private Handler mHandler;
 	private static ImageLoader sInstance;
-	private Map<ImageView, BaseGalleryModel> mMap = Collections.synchronizedMap(new WeakHashMap<ImageView, BaseGalleryModel>());
+	private Map<ImageView, BaseLoaderModel<String>> mMap = Collections.synchronizedMap(new WeakHashMap<ImageView, BaseLoaderModel<String>>());
 	private ImageLoader(Context context) {
 		
 		mContext = context.getApplicationContext();
@@ -40,7 +42,7 @@ public class ImageLoader {
 		return sInstance;
 	}
 	
-	public void loadImage(BaseGalleryModel item, ImageView imgView) {
+	public void loadImage(BaseLoaderModel<String> item, ImageView imgView) {
 		mMap.put(imgView, item);
 		if(MemoryCache.getInstance().contains(item.getId())){
 			imgView.setImageBitmap(MemoryCache.getInstance().get(item.getId()));
@@ -51,7 +53,7 @@ public class ImageLoader {
 	}
 
 	private void enqueueImage(ImageView imgView) {
-		final BaseGalleryModel model = mMap.get(imgView);
+		final BaseLoaderModel<String> model = mMap.get(imgView);
 		if(model == null) {
 			return;
 		}
@@ -63,7 +65,7 @@ public class ImageLoader {
 		
 		
 		@Override
-		public void onLoadCompleted(final Bitmap bmp, final ImageView view, final BaseGalleryModel model) {
+		public void onLoadCompleted(final Bitmap bmp, final ImageView view, final BaseLoaderModel<String> model) {
 			mHandler.post(new Runnable() {
 				
 				@Override
@@ -82,7 +84,7 @@ public class ImageLoader {
 		}
 	}
 	
-	public boolean isViewReused(BaseGalleryModel model, ImageView view) {
+	public boolean isViewReused(BaseLoaderModel<String> model, ImageView view) {
 		if(mMap.get(view) == null || !mMap.get(view).getId().equals(model.getId())){
 			return true;
 		}

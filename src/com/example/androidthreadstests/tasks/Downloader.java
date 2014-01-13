@@ -1,15 +1,17 @@
 package com.example.androidthreadstests.tasks;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import com.example.androidthreadstests.cache.DiskCache;
-import com.example.androidthreadstests.tasks.listeners.ImageDownloadListener;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+
+import com.example.androidthreadstests.cache.DiskCache;
+import com.example.androidthreadstests.tasks.listeners.ImageDownloadListener;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Downloader<T, I, D> extends HandlerThread {
 

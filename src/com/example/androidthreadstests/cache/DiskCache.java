@@ -1,20 +1,21 @@
 package com.example.androidthreadstests.cache;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import com.example.androidthreadstests.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 
+import com.example.androidthreadstests.R;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class DiskCache {
 	private static File cacheDir;
 	private static DiskCache sInstance;
-	//private static int MAX_CACHE = 1024 * 1024 * 8;
 	private DiskCache() {
 	
 	}
@@ -35,7 +36,7 @@ public class DiskCache {
 		synchronized (DiskCache.class) {
 			if(sInstance == null) {
 				if(cacheDir == null) {
-					throw new IllegalStateException("Context is null. Did you use the static method setContext(Context) first?");
+					throw new IllegalStateException("Context is null. Did you use the static method setUpStorage(Context) first?");
 				}
 				sInstance = new DiskCache();
 			}

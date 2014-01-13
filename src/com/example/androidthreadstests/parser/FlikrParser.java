@@ -1,14 +1,23 @@
 package com.example.androidthreadstests.parser;
 
-import org.xml.sax.Attributes;
-
 import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.utils.Constants;
 
-public class FlikrParser extends BaseParser<GalleryItem> {
+import org.xml.sax.Attributes;
+
+import java.util.LinkedList;
+import java.util.List;
+
+public class FlikrParser extends BaseParser<List<GalleryItem>> {
 
 	private GalleryItem mGalleryItem;
-	@Override
+
+    @Override
+    protected LinkedList<GalleryItem> generateEmptyResult() {
+        return new LinkedList<GalleryItem>();
+    }
+
+    @Override
 	protected void OnStartElement(String uri, String localName, String qName, Attributes attributes) {
 		if(qName.equalsIgnoreCase("photo")){
 			mGalleryItem = new GalleryItem();
@@ -37,15 +46,14 @@ public class FlikrParser extends BaseParser<GalleryItem> {
 	}
 
 	@Override
-	protected GalleryItem OnEndElement(String uri, String localName, String qName) {
+	protected void OnEndElement(String uri, String localName, String qName) {
 		if(qName.equalsIgnoreCase("photo")){
-			return mGalleryItem;
+            getResult().add(mGalleryItem);
 		}
-		return null;
 	}
 
-	@Override
-	protected void OnCharachters(char[] ch, int start, int length) {
-	}
+    @Override
+    protected void OnCharacters(char[] ch, int start, int length) {
 
+    }
 }

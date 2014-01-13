@@ -1,11 +1,8 @@
 package com.example.androidthreadstests.models;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.content.ContentValues;
 
-public class GalleryItem extends BaseGalleryModel {
-	
-	private String mId;
+public class GalleryItem extends BaseLoaderModel<String> {
 	private String mTitle;
 	private String mFarm;
 	private String mSecret;
@@ -43,14 +40,17 @@ public class GalleryItem extends BaseGalleryModel {
 	public void setServer(String mServer) {
 		this.mServer = mServer;
 	}
-	@Override
-	public Map<String, String> getParams() {
-		Map<String, String> map = new HashMap<String, String>();
-		map.put(ID_KEY, mId);
-		map.put(TITLE_KEY, mTitle);
-		map.put(FARM_KEY, mFarm);
-		map.put(SECRET_KEY, mSecret);
-		map.put(SERVER_KEY, mServer);
-		return map;
-	}
+
+    @Override
+    public ContentValues getContentValues() {
+        final ContentValues cv = new ContentValues();
+        cv.put(ID_KEY, getId());
+        cv.put(ID_KEY, getId());
+        cv.put(TITLE_KEY, mTitle);
+        cv.put(FARM_KEY, mFarm);
+        cv.put(SECRET_KEY, mSecret);
+        cv.put(SERVER_KEY, mServer);
+
+        return cv;
+    }
 }

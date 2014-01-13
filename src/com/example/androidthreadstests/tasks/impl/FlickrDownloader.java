@@ -1,9 +1,5 @@
 package com.example.androidthreadstests.tasks.impl;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -14,6 +10,9 @@ import com.example.androidthreadstests.cache.DiskCache;
 import com.example.androidthreadstests.cache.MemoryCache;
 import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.tasks.Downloader;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class FlickrDownloader extends Downloader<ImageView, GalleryItem, Bitmap> {
 

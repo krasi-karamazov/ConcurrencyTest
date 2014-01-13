@@ -1,7 +1,5 @@
 package com.example.androidthreadstests.adapters;
 
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -10,9 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.example.androidthreadstests.R;
 import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.tasks.ImageLoader;
+
+import java.util.List;
 
 public class GalleryAdapter extends ArrayAdapter<GalleryItem> {
 

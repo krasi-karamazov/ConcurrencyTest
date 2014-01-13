@@ -1,19 +1,20 @@
 package com.example.androidthreadstests.tasks.impl;
 
 import android.widget.ImageView;
-import com.example.androidthreadstests.models.BaseGalleryModel;
+
+import com.example.androidthreadstests.models.BaseLoaderModel;
 import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.tasks.ImageLoaderTask;
 import com.example.androidthreadstests.tasks.listeners.LoadImageListener;
 
 public class FlickrImageTask extends ImageLoaderTask {
 
-	public FlickrImageTask(ImageView view, BaseGalleryModel model, LoadImageListener listener) {
+	public FlickrImageTask(ImageView view, BaseLoaderModel<String> model, LoadImageListener listener) {
 		super(view, model, listener);
 	}
 
 	@Override
-	protected String getURL(BaseGalleryModel model) {
+	protected String getURL(BaseLoaderModel model) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("http://farm");
 		builder.append(((GalleryItem)model).getFarm());
