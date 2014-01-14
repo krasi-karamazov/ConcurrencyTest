@@ -1,9 +1,21 @@
 package com.example.androidthreadstests.tasks;
 
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.ImageView;
 
+import com.example.androidthreadstests.cache.DiskCache;
+import com.example.androidthreadstests.cache.MemoryCache;
 import com.example.androidthreadstests.models.BaseLoaderModel;
 import com.example.androidthreadstests.tasks.listeners.LoadImageListener;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public abstract class ImageLoaderTask implements Runnable {
 
@@ -18,34 +30,40 @@ public abstract class ImageLoaderTask implements Runnable {
 	
 	@Override
 	public void run() {
-		
-		/*try{
-			String urlString = getURL(mModel);
-			
-			Bitmap bmp = DiskCache.getInstance().get(mModel.getId(), 75, 75);
-			
-			if(bmp != null) {
-				
-				mListener.onLoadCompleted(bmp, mImageView, mModel);
-				Log.d(getClass().getSimpleName(), "Loaded from disk");
-			}else{
-				URL url = new URL(urlString);
-				HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-				DiskCache.getInstance().put(mModel.getId(), connection.getInputStream(), 75, 75);
-				if(MemoryCache.getInstance().contains(mModel.getId())) {
-					
-					mListener.onLoadCompleted(MemoryCache.getInstance().get(mModel.getId()), mImageView, mModel);
-					Log.d(getClass().getSimpleName(), "Loaded from web");
-				}else{
-					Log.d(getClass().getSimpleName(), "ERROR 45");
-					mListener.onLoadError(mModel.getId(), mImageView);
-				}
-				connection.disconnect();
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			mListener.onLoadError(mModel.getId(), mImageView);
-		}*/
+        Bitmap bmp;
+        if(mModel == null) {
+            return;
+        }
+
+        try{
+            if(MemoryCache.getInstance().contains(mModel.getId())){
+                bmp = MemoryCache.getInstance().get(mModel.getId());
+                Log.d(getClass().getSimpleName(), "Loaded from MEMORY");
+                mListener.onLoadCompleted(bmp, mImageView, mModel);
+                return;
+            }else{
+                String urlString = getURL(mModel);
+                bmp = DiskCache.getInstance().get(mModel.getId(), 120, 120);
+                if(bmp != null) {
+                    mListener.onLoadCompleted(bmp, mImageView, mModel);
+                    return;
+                }else{
+                    HttpGet getMethod = new HttpGet(urlString);
+                    HttpClient client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(getMethod);
+
+                    DiskCache.getInstance().put(mModel.getId(), response.getEntity().getContent(), 120, 120);
+                    if(MemoryCache.getInstance().contains(mModel.getId())) {
+                        Log.d(getClass().getSimpleName(), "Loaded from WEB");
+                        bmp =  MemoryCache.getInstance().get(mModel.getId());
+                        mListener.onLoadCompleted(bmp, mImageView, mModel);
+                    }
+                }
+            }
+
+        }catch(Exception e){
+            mListener.onLoadError(mModel.getId(), mImageView);
+        }
 	}
 
 	protected abstract String getURL(BaseLoaderModel<String> model);

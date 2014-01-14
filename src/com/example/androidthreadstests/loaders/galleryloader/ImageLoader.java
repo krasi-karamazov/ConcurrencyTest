@@ -1,4 +1,4 @@
-package com.example.androidthreadstests.tasks;
+package com.example.androidthreadstests.loaders.galleryloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;

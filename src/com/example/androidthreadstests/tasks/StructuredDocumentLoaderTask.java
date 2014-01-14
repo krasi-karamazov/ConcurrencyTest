@@ -9,6 +9,11 @@ import com.example.androidthreadstests.parser.BaseParser;
 import com.example.androidthreadstests.parser.listeners.ParserListener;
 import com.example.androidthreadstests.tasks.listeners.DownloadListener;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -18,14 +23,14 @@ import java.net.URLConnection;
 /**
  * Created by krasimir.karamazov on 1/13/14.
  */
-public class StructuredDocumentLoaderTask<R> implements ParserListener<R>{
+public class StructuredDocumentLoaderTask<Result> implements ParserListener<Result>{
     private String mURL;
-    private BaseParser<R> mParser;
-    private DownloadListener<R> mListener;
+    private BaseParser<Result> mParser;
+    private DownloadListener<Result> mListener;
     private DataAsyncTask mTask;
     private Handler mHandler;
 
-    public StructuredDocumentLoaderTask(String url, BaseParser<R> parser, DownloadListener<R> listener) {
+    public StructuredDocumentLoaderTask(String url, BaseParser<Result> parser, DownloadListener<Result> listener) {
         mURL = url;
         mParser = parser;
         mListener = listener;
@@ -41,15 +46,17 @@ public class StructuredDocumentLoaderTask<R> implements ParserListener<R>{
         mTask.cancel(interrupt);
     }
 
-    private class DataAsyncTask extends AsyncTask<String, Integer, R>{
+    private class DataAsyncTask extends AsyncTask<String, Integer, Result>{
         @Override
-        protected R doInBackground(String... strings) {
+        protected Result doInBackground(String... strings) {
             String urlString = strings[0];
-            R result;
+            Result result;
             try {
-                URL url = new URL(urlString);
-                URLConnection urlConnection = url.openConnection();
-                InputStream is = urlConnection.getInputStream();
+                HttpGet getMethod = new HttpGet(urlString);
+                HttpClient client = new DefaultHttpClient();
+                HttpResponse response = client.execute(getMethod);
+
+                InputStream is = response.getEntity().getContent();
                 result = mParser.parseData(is);
             } catch (MalformedURLException e) {
                 return null;
@@ -62,7 +69,7 @@ public class StructuredDocumentLoaderTask<R> implements ParserListener<R>{
         }
 
         @Override
-        protected void onPostExecute(R result) {
+        protected void onPostExecute(Result result) {
             super.onPostExecute(result);
             mListener.downloadComplete(result);
         }

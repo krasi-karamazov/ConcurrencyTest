@@ -16,7 +16,7 @@ public class GenericLoader {
 
     private Map<String, GenericLoaderTask> mTasks = Collections.synchronizedMap(new TreeMap<String, GenericLoaderTask>());
 
-    public void addTask(String url, String taskTag, File saveLocation, DownloadListener<Void> listener){
+    public void addTask(String url, String taskTag, File saveLocation, DownloadListener<File> listener){
         mTasks.put(taskTag, new GenericLoaderTask(url, saveLocation, listener));
     }
 

@@ -11,7 +11,7 @@ import com.example.androidthreadstests.loaders.DataType;
 import com.example.androidthreadstests.loaders.StructuredDocumentLoader;
 import com.example.androidthreadstests.models.GalleryItem;
 import com.example.androidthreadstests.parser.FlikrParser;
-import com.example.androidthreadstests.tasks.ImageLoader;
+import com.example.androidthreadstests.loaders.galleryloader.ImageLoader;
 import com.example.androidthreadstests.tasks.listeners.DownloadListener;
 import com.example.androidthreadstests.utils.Constants;
 
@@ -29,6 +29,8 @@ public class MainActivity extends android.app.Activity implements DownloadListen
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		loadCurrentPage();
+
+
 		mGridView = (GridView)findViewById(R.id.gv_grid);
 
         final Uri completeQuery = Uri.parse(Constants.ENDPOINT).buildUpon().appendQueryParameter(Constants.METHOD_PARAM_NAME, Constants.GET_RECENT_METHOD)
@@ -42,8 +44,9 @@ public class MainActivity extends android.app.Activity implements DownloadListen
         downloader.addTask(completeQuery.toString(), "MainActivity", new FlikrParser(), this);
         downloader.startAllTasks();
 
-
 		mItems = new LinkedList<GalleryItem>();
+        mAdapter = new GalleryAdapter(this, mItems);
+        mGridView.setAdapter(mAdapter);
 	}
 
 	@Override
@@ -58,7 +61,8 @@ public class MainActivity extends android.app.Activity implements DownloadListen
 
     @Override
     public void downloadComplete(List<GalleryItem> result) {
-        Log.d("PARSER ", result.size() + "");
+        mItems.addAll(result);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

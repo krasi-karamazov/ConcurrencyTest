@@ -13,14 +13,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-public abstract class BaseParser<R> {
+public abstract class BaseParser<Result> {
 	private XMLHandler mHandler;
-    private R mResult;
+    private Result mResult;
 	public BaseParser() {
 		mHandler = new XMLHandler();
 	}
 	
-	public final R parseData(InputStream xmlData) throws ParseException {
+	public final Result parseData(InputStream xmlData) throws ParseException {
 		SAXParserFactory factory = SAXParserFactory.newInstance();
         mResult = generateEmptyResult();
 		try {
@@ -36,9 +36,9 @@ public abstract class BaseParser<R> {
         return mResult;
 	}
 
-    protected abstract R generateEmptyResult();
+    protected abstract Result generateEmptyResult();
 
-    protected final R getResult(){
+    protected final Result getResult(){
         return mResult;
     }
 

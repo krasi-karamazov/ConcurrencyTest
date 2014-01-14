@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.example.androidthreadstests.R;
 import com.example.androidthreadstests.models.GalleryItem;
-import com.example.androidthreadstests.tasks.ImageLoader;
+import com.example.androidthreadstests.loaders.galleryloader.ImageLoader;
 
 import java.util.List;
 

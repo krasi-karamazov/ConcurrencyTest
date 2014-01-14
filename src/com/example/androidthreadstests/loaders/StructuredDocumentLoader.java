@@ -9,36 +9,36 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class StructuredDocumentLoader<DataType, R> {
-    private Map<String, StructuredDocumentLoaderTask<R>> mTasks = Collections.synchronizedMap(new TreeMap<String, StructuredDocumentLoaderTask<R>>());
+public class StructuredDocumentLoader<DataType, Result> {
+    private Map<String, StructuredDocumentLoaderTask<Result>> mTasks = Collections.synchronizedMap(new TreeMap<String, StructuredDocumentLoaderTask<Result>>());
 
-    public void addTask(String url, String taskTag, BaseParser<R> parser, DownloadListener<R> listener){
-        mTasks.put(taskTag, new StructuredDocumentLoaderTask<R>(url, parser, listener));
+    public void addTask(String url, String taskTag, BaseParser<Result> parser, DownloadListener<Result> listener){
+        mTasks.put(taskTag, new StructuredDocumentLoaderTask<Result>(url, parser, listener));
     }
 
     public void startAllTasks(){
-        Iterator<Map.Entry<String, StructuredDocumentLoaderTask<R>>> iterator = mTasks.entrySet().iterator();
+        Iterator<Map.Entry<String, StructuredDocumentLoaderTask<Result>>> iterator = mTasks.entrySet().iterator();
         while(iterator.hasNext()){
             iterator.next().getValue().execute();
         }
     }
 
     public void stopAllTasks(boolean interrupt){
-        Iterator<Map.Entry<String, StructuredDocumentLoaderTask<R>>> iterator = mTasks.entrySet().iterator();
+        Iterator<Map.Entry<String, StructuredDocumentLoaderTask<Result>>> iterator = mTasks.entrySet().iterator();
         while(iterator.hasNext()){
             iterator.next().getValue().dismiss(interrupt);
         }
     }
 
     public void stopTask(String tag, boolean interrupt) {
-        StructuredDocumentLoaderTask<R> task = mTasks.get(tag);
+        StructuredDocumentLoaderTask<Result> task = mTasks.get(tag);
         if(task != null) {
             task.dismiss(interrupt);
         }
     }
 
     public void startTask(String tag, boolean interrupt) {
-        StructuredDocumentLoaderTask<R> task = mTasks.get(tag);
+        StructuredDocumentLoaderTask<Result> task = mTasks.get(tag);
         if(task != null) {
             task.dismiss(interrupt);
         }
