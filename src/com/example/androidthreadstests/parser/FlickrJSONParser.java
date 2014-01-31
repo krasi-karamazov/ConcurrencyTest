@@ -28,18 +28,14 @@ public class FlickrJSONParser extends BaseJsonParser<List<GalleryItem>> {
 
     @Override
     protected void readObjectsFromJson(JsonParser parser) throws IOException {
-        JsonToken token = parser.nextToken();
-        if (token != JsonToken.END_OBJECT) {
-            String name = parser.getCurrentName();
-            if(name != null){
-                if(name.equals("pages")){
-                    parser.nextToken();
-                    try{
-                        Constants.NUM_PAGES = Integer.valueOf(parser.getText());
-                    }catch(NumberFormatException e) {
-                        Constants.NUM_PAGES = 0;
-                    }
-                    Log.d("PARSER", "PAGES " + Constants.NUM_PAGES);
+        String name = parser.getCurrentName();
+        if(name != null){
+            if(name.equals("pages")){
+                parser.nextToken();
+                try{
+                    Constants.NUM_PAGES = Integer.valueOf(parser.getText());
+                }catch(NumberFormatException e) {
+                    Constants.NUM_PAGES = 0;
                 }
             }
         }
