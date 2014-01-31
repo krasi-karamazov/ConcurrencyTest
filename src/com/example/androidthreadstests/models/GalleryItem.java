@@ -2,6 +2,9 @@ package com.example.androidthreadstests.models;
 
 import android.content.ContentValues;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 public class GalleryItem extends BaseLoaderModel<String> {
 	private String mTitle;
 	private String mFarm;
@@ -14,29 +17,40 @@ public class GalleryItem extends BaseLoaderModel<String> {
 	public static final String SECRET_KEY = "SECRET";
 	public static final String SERVER_KEY = "SERVER";
 	
-	
+	@JsonAnySetter
+    public void setValue() {
+
+    }
 	
 	public String getTitle() {
 		return mTitle;
 	}
+
+    @JsonSetter("title")
 	public void setTitle(String mTitle) {
 		this.mTitle = mTitle;
 	}
 	public String getFarm() {
 		return mFarm;
 	}
+
+    @JsonSetter("farm")
 	public void setFarm(String mFarm) {
 		this.mFarm = mFarm;
 	}
 	public String getSecret() {
 		return mSecret;
 	}
+
+    @JsonSetter("secret")
 	public void setSecret(String mSecret) {
 		this.mSecret = mSecret;
 	}
 	public String getServer() {
 		return mServer;
 	}
+
+    @JsonSetter("server")
 	public void setServer(String mServer) {
 		this.mServer = mServer;
 	}

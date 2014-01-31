@@ -1,6 +1,7 @@
 package com.example.androidthreadstests.loaders;
 
 import com.example.androidthreadstests.parser.BaseParser;
+import com.example.androidthreadstests.parser.BaseXMLParser;
 import com.example.androidthreadstests.tasks.StructuredDocumentLoaderTask;
 import com.example.androidthreadstests.tasks.listeners.DownloadListener;
 

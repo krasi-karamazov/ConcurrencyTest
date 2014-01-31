@@ -8,7 +8,7 @@ import org.xml.sax.Attributes;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FlikrParser extends BaseParser<List<GalleryItem>> {
+public class FlikrParser extends BaseXMLParser<List<GalleryItem>> {
 
 	private GalleryItem mGalleryItem;
 

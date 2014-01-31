@@ -17,8 +17,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * Created by krasimir.karamazov on 1/13/14.
@@ -61,8 +59,6 @@ public class StructuredDocumentLoaderTask<Result> implements ParserListener<Resu
             } catch (MalformedURLException e) {
                 return null;
             }catch (IOException ioe){
-                return null;
-            }catch(ParseException pe){
                 return null;
             }
             return result;
